@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker-compose up:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npm create:*)",
+      "Bash(npm run:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(curl -s http://localhost:3000/health)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl:*)",
+      "Bash(node -e \"const bcrypt = require\\(''bcrypt''\\); bcrypt.hash\\(''admin123'', 10\\).then\\(hash => console.log\\(''Hash:'', hash\\)\\);\")",
+      "Bash(pkill:*)",
+      "Bash(rm -rf node_modules/.vite/deps/echarts-for-react*)",
+      "Bash(npm uninstall:*)",
+      "Bash(/dev/null ps:*)",
+      "Bash(__NEW_LINE_6348abf389c9afa4__ echo:*)",
+      "Bash(open:*)",
+      "Bash(docker start:*)",
+      "Bash(docker run:*)",
+      "Bash(npm view:*)",
+      "Bash(lsof:*)",
+      "Bash(npm list:*)",
+      "Bash(node:*)",
+      "Bash(在后端目录生成密码哈希)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(chmod:*)",
+      "Bash(ls:*)",
+      "Bash(git init:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
