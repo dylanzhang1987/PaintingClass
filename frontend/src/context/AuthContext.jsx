@@ -65,12 +65,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const changePassword = async (oldPassword, newPassword) => {
+    try {
+      await authApi.changePassword(oldPassword, newPassword);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Password change failed'
+      };
+    }
+  };
+
   const value = {
     user,
     token,
     loading,
     login,
     logout,
+    changePassword,
     checkAuth,
     isAuthenticated: !!token && !!user
   };

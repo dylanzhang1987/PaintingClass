@@ -56,6 +56,12 @@ const MainLayout = () => {
               <p className="text-sm text-gray-500 capitalize">{user?.role || ''}</p>
             </div>
           </div>
+          <Link
+            to="/change-password"
+            className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mb-2 block text-center"
+          >
+            修改密码
+          </Link>
           <button
             onClick={logout}
             className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"

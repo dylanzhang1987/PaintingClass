@@ -31,7 +31,11 @@
       "Bash(git init:*)",
       "Bash(gh auth:*)",
       "Bash(gh repo:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ]
   }
 }

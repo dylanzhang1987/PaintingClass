@@ -43,7 +43,7 @@ const AuthController = {
         return res.status(400).json({ error: 'Old and new passwords are required' });
       }
 
-      const user = await User.findById(req.user.id);
+      const user = await User.findByIdWithPassword(req.user.id);
       const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
 
       if (!isPasswordValid) {
@@ -51,7 +51,7 @@ const AuthController = {
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-      await User.update(req.user.id, { ...user, password: hashedPassword });
+      await User.updatePassword(req.user.id, hashedPassword);
 
       res.json({ message: 'Password changed successfully' });
     } catch (error) {

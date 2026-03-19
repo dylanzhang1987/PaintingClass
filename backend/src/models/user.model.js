@@ -9,6 +9,11 @@ const User = {
     return users[0];
   },
 
+  async findByIdWithPassword(id) {
+    const [users] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+    return users[0];
+  },
+
   async findByUsername(username) {
     const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
     return users[0];
@@ -31,6 +36,14 @@ const User = {
     const [result] = await pool.query(
       'UPDATE users SET full_name = ?, email = ?, role = ?, is_active = ? WHERE id = ?',
       [userData.full_name, userData.email, userData.role, userData.is_active, id]
+    );
+    return result.affectedRows;
+  },
+
+  async updatePassword(id, hashedPassword) {
+    const [result] = await pool.query(
+      'UPDATE users SET password = ? WHERE id = ?',
+      [hashedPassword, id]
     );
     return result.affectedRows;
   },

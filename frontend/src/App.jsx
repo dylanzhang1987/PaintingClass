@@ -12,6 +12,7 @@ import Courses from './pages/courses/Courses';
 import Attendance from './pages/attendance/Attendance';
 import Statistics from './pages/statistics/Statistics';
 import AuditLogs from './pages/audit-logs/AuditLogs';
+import ChangePassword from './pages/auth/ChangePassword';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -50,6 +51,7 @@ const App = () => {
             <Route path="statistics" element={<Statistics />} />
             <Route path="users" element={<Users />} />
             <Route path="audit-logs" element={<AuditLogs />} />
+            <Route path="change-password" element={<ChangePassword />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" />} />
