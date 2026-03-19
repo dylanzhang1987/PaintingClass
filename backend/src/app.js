@@ -18,8 +18,19 @@ const auditRoutes = require('./routes/audit.routes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// Middleware - CORS configuration
+const allowedOrigins = process.env.FRONTEND_URL === '*'
+  ? '*'
+  : (process.env.FRONTEND_URL || 'http://localhost:5173').split(',');
+
+const corsOptions = {
+  origin: allowedOrigins === '*' ? '*' : allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(accessLogMiddleware);
