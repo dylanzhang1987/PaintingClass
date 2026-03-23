@@ -60,16 +60,21 @@ const Student = {
 
   async findAll(page = 1, limit = 10, search = '') {
     const offset = (page - 1) * limit;
-    let query = 'SELECT * FROM students WHERE is_active = TRUE';
+    let query = `
+      SELECT s.*,
+             (SELECT COUNT(*) FROM course_enrollments WHERE student_id = s.id AND status = 'active') as enrollment_count
+      FROM students s
+      WHERE s.is_active = TRUE
+    `;
     let params = [];
 
     if (search) {
-      query += ' AND (student_number LIKE ? OR name LIKE ? OR email LIKE ?)';
+      query += ' AND (s.student_number LIKE ? OR s.name LIKE ? OR s.email LIKE ?)';
       const searchTerm = `%${search}%`;
       params.push(searchTerm, searchTerm, searchTerm);
     }
 
-    query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+    query += ' ORDER BY s.created_at DESC LIMIT ? OFFSET ?';
     params.push(limit, offset);
 
     const [students] = await pool.query(query, params);
@@ -113,10 +118,13 @@ const Student = {
   async getCourseEnrollments(studentId) {
     const [enrollments] = await pool
       .query(`
-      SELECT ce.*, c.name as course_name, c.teacher_id
+      SELECT c.*, ce.enrollment_date, ce.status, ce.notes as enrollment_notes,
+             u.full_name as teacher_name,
+             (SELECT COUNT(*) FROM course_enrollments WHERE course_id = c.id AND status = 'active') as student_count
       FROM course_enrollments ce
       JOIN courses c ON ce.course_id = c.id
-      WHERE ce.student_id = ?
+      JOIN users u ON c.teacher_id = u.id
+      WHERE ce.student_id = ? AND ce.status = 'active'
     `, [studentId]);
     return enrollments;
   }
