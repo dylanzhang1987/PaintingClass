@@ -142,7 +142,7 @@ const Courses = () => {
     setError('');
   };
 
-  const handleDelete = async (r.id) => {
+  const handleDelete = async (id) => {
     try {
       await coursesApi.delete(id);
       fetchCourses();
