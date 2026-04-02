@@ -27,7 +27,7 @@ const Course = {
 
   async update(id, courseData) {
     const [result] = await pool.query(
-      `UPDATE courses SET name = ?, description = ?, start_date = ?, end_date = ?, schedule = ?, max_students = ?, level = ?, fee = ?, is_active = ?
+      `UPDATE courses SET name = ?, description = ?, start_date = ?, end_date = ?, schedule = ?, max_students = ?, level = ?, fee = ?, teacher_id = ?
        WHERE id = ?`,
       [
         courseData.name,
@@ -38,7 +38,7 @@ const Course = {
         courseData.max_students,
         courseData.level,
         courseData.fee,
-        courseData.is_active,
+        courseData.teacher_id,
         id
       ]
     );

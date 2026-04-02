@@ -1,0 +1,15 @@
+{
+  "threshold": 10,
+  "reporters": ["console", "html"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.git/**",
+    "**/coverage/**"
+  ],
+  "absolute": true,
+  "minLines": 5,
+  "maxLines": 500,
+  "minTokens": 50
+}

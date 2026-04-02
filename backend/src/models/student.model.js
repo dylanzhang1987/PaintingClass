@@ -34,19 +34,20 @@ const Student = {
 
   async update(id, studentData) {
     const [result] = await pool.query(
-      `UPDATE students SET name = ?, gender = ?, birth_date = ?, phone = ?, email = ?, address = ?, guardian_name = ?, guardian_phone = ?, notes = ?, is_active = ?
+      `UPDATE students SET student_number = ?, name = ?, gender = ?, birth_date = ?, phone = ?, email = ?, address = ?, enrollment_date = ?, guardian_name = ?, guardian_phone = ?, notes = ?
        WHERE id = ?`,
       [
+        studentData.student_number,
         studentData.name,
         studentData.gender,
         studentData.birth_date,
         studentData.phone,
         studentData.email,
         studentData.address,
+        studentData.enrollment_date,
         studentData.guardian_name,
         studentData.guardian_phone,
         studentData.notes,
-        studentData.is_active,
         id
       ]
     );

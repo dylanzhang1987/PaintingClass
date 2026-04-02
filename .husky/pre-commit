@@ -1,4 +1,45 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+echo "🔍 Running code review checks..."
+
+# Run backend linting
+echo "📦 Checking backend code..."
+cd backend
+if ! npm run lint; then
+  echo "❌ Backend linting failed"
+  exit 1
+fi
+cd ..
+
+# Run frontend linting
+echo "📦 Checking frontend code..."
+cd frontend
+if ! npm run lint; then
+  echo "❌ Frontend linting failed"
+  exit 1
+fi
+cd ..
+
+# Check formatting
+echo "🎨 Checking code formatting..."
+cd backend
+if ! npm run format:check; then
+  echo "❌ Backend formatting check failed. Run 'npm run format' to fix."
+  exit 1
+fi
+cd ..
+
+cd frontend
+if ! npm run format:check; then
+  echo "❌ Frontend formatting check failed. Run 'npm run format' to fix."
+  exit 1
+fi
+cd ..
+
+# Run frontend tests
+echo "🧪 Running frontend tests..."
 cd frontend && npm run test:run
+cd ..
+
+echo "✅ All code review checks passed!"

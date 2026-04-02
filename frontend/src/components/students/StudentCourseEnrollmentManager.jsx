@@ -25,7 +25,7 @@ const StudentCourseEnrollmentManager = ({ studentId, studentName, onClose, onSuc
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [studentId]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -36,15 +36,15 @@ const StudentCourseEnrollmentManager = ({ studentId, studentName, onClose, onSuc
         coursesApi.getAll(1, 1000, '')
       ]);
 
-      const student = studentResponse.data.student || studentResponse.data;
-      const enrollments = student.enrollments || [];
+      const enrollments = studentResponse.data?.enrollments || [];
       setEnrolledCourses(enrollments.map(e => ({
         ...e,
         enrollment_date: e.enrollment_date || e.created_at
       })));
 
       const enrolledIds = new Set(enrollments.map(e => e.id));
-      const available = allCoursesResponse.data.courses
+      const allCourses = allCoursesResponse.data?.courses || [];
+      const available = allCourses
         .filter(c => !enrolledIds.has(c.id))
         .filter(c => !c.max_students || c.student_count < c.max_students); // Only show courses with space
       setAvailableCourses(available);
@@ -122,9 +122,11 @@ const StudentCourseEnrollmentManager = ({ studentId, studentName, onClose, onSuc
   };
 
   const getFilteredAvailableCourses = () => {
+    if (!Array.isArray(availableCourses)) return [];
     if (!search) return availableCourses;
+    const searchLower = search.toLowerCase();
     return availableCourses.filter(c =>
-      c.name.toLowerCase().search(search.toLowerCase()) !== -1
+      c && c.name && c.name.toLowerCase().includes(searchLower)
     );
   };
 

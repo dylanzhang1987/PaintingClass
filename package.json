@@ -1,0 +1,16 @@
+{
+  "name": "painting-class",
+  "version": "1.0.0",
+  "description": "Course Management System",
+  "scripts": {
+    "lint:all": "npm run lint --prefix backend && npm run lint --prefix frontend",
+    "format:all": "npm run format --prefix backend && npm run format --prefix frontend",
+    "format:check:all": "npm run format:check --prefix backend && npm run format:check --prefix frontend",
+    "check:duplicates": "jscpd . --config .jscpd.json",
+    "check:all": "npm run lint:all && npm run format:check:all && npm run check:duplicates"
+  },
+  "devDependencies": {
+    "jscpd": "^4.0.6",
+    "prettier": "^3.4.2"
+  }
+}

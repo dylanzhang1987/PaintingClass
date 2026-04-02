@@ -20,7 +20,7 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [courseId]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -28,14 +28,16 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
     try {
       const [enrolledResponse, allStudentsResponse] = await Promise.all([
         coursesApi.getStudents(courseId),
-        studentsApi.getAll(1, 1000, '') // Get all students for selection
+        studentsApi.getAll(1, 1000, '')
       ]);
 
-      setEnrolledStudents(enrolledResponse.data.students);
-      setEnrollmentCount(enrolledResponse.data.students.length);
+      const students = enrolledResponse.data?.students || [];
+      setEnrolledStudents(students);
+      setEnrollmentCount(students.length);
 
-      const enrolledIds = new Set(enrolledResponse.data.students.map(s => s.id));
-      const available = allStudentsResponse.data.students.filter(s => !enrolledIds.has(s.id));
+      const enrolledIds = new Set(students.map(s => s.id));
+      const allStudents = allStudentsResponse.data?.students || [];
+      const available = allStudents.filter(s => !enrolledIds.has(s.id));
       setAvailableStudents(available);
     } catch (err) {
       setError('获取学生数据失败');
@@ -45,7 +47,7 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
     }
   };
 
-  const handleWithdraw = async (student) => {
+  const handleWithdraw = (student) => {
     setStudentToWithdraw(student);
     setShowWithdrawConfirm(true);
   };
@@ -100,7 +102,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
     if (newSet.has(studentId)) {
       newSet.delete(studentId);
     } else {
-      // Check capacity
       const newTotal = enrollmentCount + newSet.size;
       if (maxStudents && newTotal >= maxStudents) {
         setError(`课程最多只能容纳 ${maxStudents} 名学生`);
@@ -130,11 +131,13 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
   };
 
   const getFilteredAvailableStudents = () => {
+    if (!Array.isArray(availableStudents)) return [];
     if (!search) return availableStudents;
-    return availableStudents.filter(s =>
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.student_number.toLowerCase().includes(search.toLowerCase())
-    );
+    const searchLower = search.toLowerCase();
+    return availableStudents.filter(s => s && s.name && s.student_number && (
+      s.name.toLowerCase().includes(searchLower) ||
+      s.student_number.toLowerCase().includes(searchLower)
+    ));
   };
 
   const filteredAvailableStudents = getFilteredAvailableStudents();
@@ -147,7 +150,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
       size="lg"
     >
       <div className="space-y-4">
-        {/* Enrollment Count Display */}
         <div className="bg-blue-50 p-3 rounded-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-blue-900">
@@ -164,7 +166,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
           )}
         </div>
 
-        {/* Tabs */}
         <div className="border-b border-gray-200">
           <nav className="flex space-x-4">
             <button
@@ -175,7 +176,7 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              已注册学生 ({enrolledCount})
+              已注册学生 ({enrollmentCount})
             </button>
             <button
               onClick={() => { setActiveTab('available'); setError(''); }}
@@ -200,7 +201,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
           <LoadingSpinner size="md" />
         ) : (
           <>
-            {/* Enrolled Students Tab */}
             {activeTab === 'enrolled' && (
               <div className="space-y-2">
                 {enrolledStudents.length === 0 ? (
@@ -241,10 +241,8 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
               </div>
             )}
 
-            {/* Available Students Tab */}
             {activeTab === 'available' && (
               <div className="space-y-4">
-                {/* Search */}
                 <div>
                   <input
                     type="text"
@@ -255,7 +253,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
                   />
                 </div>
 
-                {/* Selection Controls */}
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">
                     已选择 {selectedStudents.size} 名学生
@@ -276,7 +273,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
                   </div>
                 </div>
 
-                {/* Student List */}
                 {filteredAvailableStudents.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     {search ? '未找到匹配的学生' : '没有可添加的学生'}
@@ -323,7 +319,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
                   </div>
                 )}
 
-                {/* Enroll Button */}
                 {selectedStudents.size > 0 && (
                   <button
                     onClick={handleEnroll}
@@ -339,7 +334,6 @@ const CourseEnrollmentManager = ({ courseId, courseName, maxStudents, onClose, o
         )}
       </div>
 
-      {/* Withdraw Confirmation Dialog */}
       <ConfirmDialog
         isOpen={showWithdrawConfirm}
         onClose={() => { setShowWithdrawConfirm(false); setStudentToWithdraw(null); }}
